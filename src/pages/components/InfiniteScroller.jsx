@@ -44,7 +44,7 @@ const InfiniteScroller = ({ newsData = [] }) => {
 
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-auto p-4">
-      <h2 className="text-2xl font-bold text-center mt-4 text-white">News Flash</h2>
+      <h2 className="text-2xl font-bold text-center mt-4 text-[#E1DFEC] DMSans">Activty</h2>
 
      
       <div className="flex flex-col w-full max-w-[90vw] lg:max-w-[70vw] h-[70vh] md:h-[60vh] p-4 border border-gray-700 rounded-lg bg-[rgb(16,14,33)] shadow-lg">

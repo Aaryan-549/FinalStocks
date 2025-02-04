@@ -40,14 +40,14 @@ const CryptoTable = () => {
   }, []);
 
   return (
-    <div className="mx-[16.8125rem] w-[53.3rem] flex justify-center items-center min-h-screen p-0" style={{ backgroundColor: "rgb(16,14,33)" }}>
+    <div className="mx-[16.8125rem] w-[53.3rem] DMSans flex justify-center items-center min-h-screen p-0" style={{ backgroundColor: "rgb(16,14,33)" }}>
       <table className="w-full max-w-6xl bg-gray-800 text-white p-0 rounded-lg shadow-lg h-full text-center border-separate border-spacing-4" style={{ backgroundColor: "rgb(16,14,33)" }}>
         <thead>
           <tr className="border-b border-gray-700 text-gray-400 text-lg">
-            <th className="p-4">Crypto</th>
-            <th className="p-4">Updated</th>
-            <th className="p-4">Change</th>
-            <th className="p-4">Price</th>
+            <th className="p-4 DMSans">Stocks</th>
+            <th className="p-4 DMSans">Updated</th>
+            <th className="p-4 DMSans">Change</th>
+            <th className="p-4 DMSans">Price</th>
           </tr>
         </thead>
         <tbody>

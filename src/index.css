@@ -16,16 +16,16 @@ body {
 }
 
 @font-face {
-    font-family: 'Hahmlet';
-    src: url('./pages/assets/Hahmlet-VariableFont_wght.ttf') format('truetype');
+    font-family: 'DMSans';
+    src: url('./pages/assets/DMSans-VariableFont_opsz,wght.ttf') format('truetype');
   }
 
   .Red-Rose {
     font-family: 'Red-Rose';
   }
   
-  .Hahmlet {
-    font-family: 'Hahmlet';
+  .DMSans {
+    font-family: 'DMSans';
   }
 
  

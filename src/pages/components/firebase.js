@@ -4,13 +4,14 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBu0DJKYskShtg6BNa04-oDCYKA4tPml-w",
-  authDomain: "wdsstocks-10.firebaseapp.com",
-  projectId: "wdsstocks-10",
-  storageBucket: "wdsstocks-10.firebasestorage.app",
-  messagingSenderId: "676084590635",
-  appId: "1:676084590635:web:7855451875838781e7a26e",
-  measurementId: "G-6RM363GTWV"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: "G-409VWSGFSH"
 };
 
 // Initialize Firebase

@@ -43,11 +43,11 @@ const CryptoTable = () => {
     <>
       <h2 className="text-4xl font-bold text-center mb-[1%] text-[#E1DFEC] DMSans">Stocks</h2>
       <div
-        className="flex justify-center items-center min-h-screen bg-gray-[[#110E22]"
+        className="flex justify-center items-center min-h-screen "
         
       >
         <table
-          className="w-[53.3rem] mx-auto text-white rounded-lg shadow-lg text-center border-separate border-spacing-4"
+          className="w-[53.3%] mx-auto text-white rounded-lg shadow-lg text-center border-separate border-spacing-4"
           style={{ backgroundColor: "rgb(16,14,33)" }}
         >
           <thead>

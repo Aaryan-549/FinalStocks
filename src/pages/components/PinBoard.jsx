@@ -65,36 +65,26 @@ function PinBoard() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {cryptoData
           .filter((crypto) => selectedCryptos.includes(crypto.name))
           .map((crypto, index) => (
-            <div key={index} className="flex flex-col items-start space-y-2">
-              <h3 className="text-2xl font-bold text-white">{crypto.name}</h3>
-              <div
-                className="bg-[#7D67FF] text-white p-6 rounded-xl shadow-md flex flex-col space-y-4 relative w-full"
-              >
-                <button
-                  className="absolute top-3 right-3 text-red-500 hover:text-red-700"
-                  onClick={() => removeCrypto(crypto.name)}
-                >
-                  <X size={20} />
-                </button>
-
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 flex items-center justify-center bg-orange-500 text-white text-lg font-bold rounded-full">
+            <div key={index} className="flex items-center space-x-4 p-4 bg-[#0B091A] hover:bg-[#7D67FF] border border-gray-600 transition-colors duration-300 text-white rounded-lg shadow-md w-full">
+              <div className="flex flex-col space-y-2 w-1/2">
+                <h3 className="text-lg font-bold">{crypto.name}</h3>
+                <div className="flex items-center space-x-2">
+                  <div className="w-10 h-10 flex items-center justify-center bg-orange-500 text-white text-md font-bold rounded-full">
                     {crypto.name[0]}
                   </div>
-                  <div className="text-2xl font-semibold">${crypto.price}</div>
+                  <div className="text-lg font-semibold">${crypto.price}</div>
                 </div>
-
-                <div className="text-gray-400">{crypto.updated}</div>
-
-                <div className={`text-lg font-bold ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
+                <div className="text-gray-400 text-sm">{crypto.updated}</div>
+                <div className={`text-md font-bold ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
                   {crypto.change < 0 ? `↓ ${crypto.change}%` : `↑ ${crypto.change}%`}
                 </div>
-
-                <ResponsiveContainer width="100%" height={100}>
+              </div>
+              <div className="w-1/2">
+                <ResponsiveContainer width="100%" height={60}>
                   <LineChart data={priceHistory[crypto.name]}>
                     <XAxis dataKey="time" hide />
                     <YAxis domain={['auto', 'auto']} hide />
@@ -103,6 +93,12 @@ function PinBoard() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                onClick={() => removeCrypto(crypto.name)}
+              >
+                <X size={16} />
+              </button>
             </div>
           ))}
       </div>

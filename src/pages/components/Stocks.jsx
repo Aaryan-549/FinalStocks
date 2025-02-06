@@ -40,33 +40,48 @@ const CryptoTable = () => {
   }, []);
 
   return (
-    <div className="mx-[16.8125rem] w-[53.3rem] DMSans flex justify-center items-center min-h-screen p-0" style={{ backgroundColor: "rgb(16,14,33)" }}>
-      <table className="w-full max-w-6xl bg-gray-800 text-white p-0 rounded-lg shadow-lg h-full text-center border-separate border-spacing-4" style={{ backgroundColor: "rgb(16,14,33)" }}>
-        <thead>
-          <tr className="border-b border-gray-700 text-gray-400 text-lg">
-            <th className="p-4 DMSans">Stocks</th>
-            <th className="p-4 DMSans">Updated</th>
-            <th className="p-4 DMSans">Change</th>
-            <th className="p-4 DMSans">Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cryptoData.map((crypto, index) => (
-            <tr key={index} className="border-b border-gray-700 text-lg">
-              <td className="p-4 flex items-center justify-center">
-                <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center mr-2">B</span>
-                {crypto.name}
-              </td>
-              <td className="p-4 text-gray-400">{crypto.updated}</td>
-              <td className={`p-4 ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
-                ↓ {crypto.change}%
-              </td>
-              <td className="p-4">{crypto.price}</td>
+    <>
+      <h2 className="text-4xl font-bold text-center mb-[1%] text-[#E1DFEC] DMSans">Stocks</h2>
+      <div
+        className="flex justify-center items-center min-h-screen bg-gray-[[#110E22]"
+        
+      >
+        <table
+          className="w-[53.3rem] mx-auto text-white rounded-lg shadow-lg text-center border-separate border-spacing-4"
+          style={{ backgroundColor: "rgb(16,14,33)" }}
+        >
+          <thead>
+            <tr className="border-b border-gray-700 text-gray-400 text-lg">
+              <th className="p-4 DMSans">Stocks</th>
+              <th className="p-4 DMSans">Updated</th>
+              <th className="p-4 DMSans">Change</th>
+              <th className="p-4 DMSans">Price</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {cryptoData.map((crypto, index) => (
+              <tr key={index} className="border-b border-gray-700 text-lg">
+                <td className="p-4 flex items-center justify-center">
+                  <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center mr-2">
+                    B
+                  </span>
+                  {crypto.name}
+                </td>
+                <td className="p-4 text-gray-400">{crypto.updated}</td>
+                <td
+                  className={`p-4 ${
+                    crypto.change < 0 ? "text-red-500" : "text-green-500"
+                  }`}
+                >
+                  ↓ {crypto.change}%
+                </td>
+                <td className="p-4">{crypto.price}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

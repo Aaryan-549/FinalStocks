@@ -1,51 +1,93 @@
 import React, { useState, useEffect } from "react";
 
-const staticCryptoData = [
-  { name: "BITCOIN", price: "$12,729", change: "-2.64", updated: "5 seconds ago" },
-  { name: "ETHEREUM", price: "$3,425", change: "-1.34", updated: "10 seconds ago" },
-  { name: "DOGECOIN", price: "$0.24", change: "-0.50", updated: "15 seconds ago" },
-  { name: "RIPPLE", price: "$1.05", change: "-0.75", updated: "20 seconds ago" },
-  { name: "LITECOIN", price: "$150.25", change: "-1.20", updated: "25 seconds ago" },
-  { name: "CARDANO", price: "$2.15", change: "-1.45", updated: "30 seconds ago" },
-  { name: "POLKADOT", price: "$18.75", change: "-0.85", updated: "35 seconds ago" },
-  { name: "CHAINLINK", price: "$25.30", change: "-1.10", updated: "40 seconds ago" },
-  { name: "STELLAR", price: "$0.32", change: "-0.65", updated: "45 seconds ago" },
-  { name: "MONERO", price: "$230.80", change: "-1.85", updated: "50 seconds ago" },
-  { name: "BITCOIN CASH", price: "$540.00", change: "-2.00", updated: "55 seconds ago" },
-  { name: "EOS", price: "$4.25", change: "-1.15", updated: "60 seconds ago" },
-  { name: "DASH", price: "$180.40", change: "-2.10", updated: "65 seconds ago" },
-  { name: "ZCASH", price: "$130.75", change: "-1.75", updated: "70 seconds ago" },
-  { name: "VECHAIN", price: "$0.11", change: "-0.45", updated: "75 seconds ago" },
-  { name: "TETHER", price: "$1.00", change: "0.00", updated: "80 seconds ago" },
-  { name: "SOLANA", price: "$95.50", change: "-1.95", updated: "85 seconds ago" },
-  { name: "TRON", price: "$0.09", change: "-0.40", updated: "90 seconds ago" },
-  { name: "IOTA", price: "$1.45", change: "-0.60", updated: "95 seconds ago" },
-  { name: "NEO", price: "$38.75", change: "-1.80", updated: "100 seconds ago" },
-  { name: "TEZOS", price: "$3.95", change: "-0.85", updated: "105 seconds ago" },
-  { name: "AVALANCHE", price: "$72.30", change: "-2.20", updated: "110 seconds ago" },
-  { name: "ALGORAND", price: "$1.20", change: "-0.55", updated: "115 seconds ago" },
-  { name: "FANTOM", price: "$2.30", change: "-1.25", updated: "120 seconds ago" },
-  { name: "HEDERA", price: "$0.45", change: "-0.30", updated: "125 seconds ago" },
-  { name: "COSMOS", price: "$28.50", change: "-2.10", updated: "130 seconds ago" },
-  { name: "HARMONY", price: "$0.32", change: "-0.50", updated: "135 seconds ago" },
-  { name: "GALA", price: "$0.08", change: "-0.20", updated: "140 seconds ago" },
-  { name: "FLOW", price: "$9.60", change: "-1.90", updated: "145 seconds ago" }
+// 🔹 Initial stock data with starting price
+const INITIAL_STOCKS = [
+  { name: "Suzlon Energy", startPrice: 210 },
+  { name: "ITC", startPrice: 441.4 },
+  { name: "Yes Bank", startPrice: 18.25 },
+  { name: "Hindustan Aeronotics ltd.", startPrice: 234 },
+  { name: "Adani Power", startPrice: 515.5 },
+  { name: "RVNL", startPrice: 411 },
+  { name: "Mahindra & Mahindra ltd.", startPrice: 2799 },
+  { name: "Union Bank of India", startPrice: 107.22 },
+  { name: "DLF", startPrice: 692.8 },
+  { name: "Reliance Industries", startPrice: 1244.45 },
+  { name: "Indian Oil Corporation", startPrice: 128.61 },
+  { name: "Elcid Investments", startPrice: 132833.5 },
+  { name: "Steel Authority of India ltd.", startPrice: 109.05 },
+  { name: "Cipla", startPrice: 1425 },
+  { name: "Sun Pharmaceutical Industries", startPrice: 1818 },
+  { name: "L&T", startPrice: 3458.2 },
+  { name: "Adani Ports and Special Economic Zone", startPrice: 1094.15 },
+  { name: "Ambuja Cements", startPrice: 551.8 },
+  { name: "JSW Steel", startPrice: 932.45 },
+  { name: "Mazdock", startPrice: 2299.55 },
+  { name: "Ola Electric", startPrice: 71.34 },
+  { name: "MRF", startPrice: 111468.05 },
+  { name: "Devyani International", startPrice: 171.22 },
+  { name: "Vodafone Idea", startPrice: 9.46 },
+  { name: "Barflex Polyfilms Ltd", startPrice: 69.2 },
+  { name: "Bank Of Maharashtra", startPrice: 49.56 },
+  { name: "Mahasagar Travels", startPrice: 7.48 },
+  { name: "INDIGO", startPrice: 4293.6 },
+  { name: "Surana Telecom & Power", startPrice: 21.38 }
 ];
+
+const sheetUrl = "https://docs.google.com/spreadsheets/d/1watWnb_z-P-kmFMJ902T-XvZNqNLaXqs3l_xSlVXHzA/gviz/tq?tqx=out:json"; // Replace with actual sheet URL
 
 const CryptoTable = () => {
   const [cryptoData, setCryptoData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState(Math.floor(Date.now() / 1000));
 
   useEffect(() => {
-    setCryptoData(staticCryptoData);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const now = Math.floor(Date.now() / 1000); 
+        setLastUpdateTime(now);
+
+        const res = await fetch(sheetUrl);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+
+        const rows = json.table.rows.map((row) => {
+          const cells = row.c.map((cell) => cell?.v || "N/A");
+          const name = cells[0];
+          const latestPrice = parseFloat(cells[1]);
+
+          
+          const initialStock = INITIAL_STOCKS.find(stock => stock.name === name);
+          const startPrice = initialStock ? initialStock.startPrice : latestPrice;
+
+          
+          const change = startPrice !== 0 ? (((latestPrice - startPrice) / startPrice) * 100).toFixed(2) : "0.00";
+
+          
+          const timeSinceUpdate = now - lastUpdateTime;
+
+          return { name, price: latestPrice, startPrice, change, updated: timeSinceUpdate };
+        });
+
+        setCryptoData(rows);
+        setLoading(false);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load data. Retrying...");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 3000);
+
+    return () => clearInterval(interval);
+  }, [lastUpdateTime]);
 
   return (
     <>
       <h2 className="text-4xl font-bold text-center mb-[1%] text-[#E1DFEC] DMSans">Stocks</h2>
-      <div
-        className="flex justify-center items-center min-h-screen "
-        
-      >
+      <div className="flex justify-center items-center min-h-screen">
         <table
           className="w-[53.3%] mx-auto text-white rounded-lg shadow-lg text-center border-separate border-spacing-4"
           style={{ backgroundColor: "rgb(16,14,33)" }}
@@ -53,31 +95,41 @@ const CryptoTable = () => {
           <thead>
             <tr className="border-b border-gray-700 text-gray-400 text-lg">
               <th className="p-4 DMSans">Stocks</th>
-              <th className="p-4 DMSans">Updated</th>
+              <th className="p-4 DMSans">Updated (secs ago)</th>
               <th className="p-4 DMSans">Change</th>
               <th className="p-4 DMSans">Price</th>
             </tr>
           </thead>
           <tbody>
-            {cryptoData.map((crypto, index) => (
-              <tr key={index} className="border-b border-gray-700 text-lg">
-                <td className="p-4 flex items-center justify-center">
-                  <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center mr-2">
-                    B
-                  </span>
-                  {crypto.name}
+            {loading ? (
+              <tr>
+                <td colSpan="4" className="p-4 text-gray-400 text-center">
+                  Loading data...
                 </td>
-                <td className="p-4 text-gray-400">{crypto.updated}</td>
-                <td
-                  className={`p-4 ${
-                    crypto.change < 0 ? "text-red-500" : "text-green-500"
-                  }`}
-                >
-                  ↓ {crypto.change}%
-                </td>
-                <td className="p-4">{crypto.price}</td>
               </tr>
-            ))}
+            ) : error ? (
+              <tr>
+                <td colSpan="4" className="p-4 text-red-500 text-center">
+                  {error}
+                </td>
+              </tr>
+            ) : (
+              cryptoData.map((crypto, index) => (
+                <tr key={index} className="border-b border-gray-700 text-lg">
+                  <td className="p-4 flex items-center justify-center">
+                    <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center mr-2">
+                      B
+                    </span>
+                    {crypto.name}
+                  </td>
+                  <td className="p-4 text-gray-400">{crypto.updated} secs ago</td>
+                  <td className={`p-4 ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
+                    {crypto.change < 0 ? "↓" : "↑"} {crypto.change}%
+                  </td>
+                  <td className="p-4">${crypto.price}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

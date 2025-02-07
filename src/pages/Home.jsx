@@ -2,9 +2,10 @@ import React from 'react'
 import Econ from './assets/ec.png'
 import NewsBox from './components/NewsBox'
 import Stocks from './components/Stocks'
-import NewsApp from './components/NewsApp'
+
 import RoundNews from './components/newsfetch';
 import PinBoard from './components/PinBoard'
+// import FetchData from "./fetch";
 
 function Home() {
   return (
@@ -14,6 +15,7 @@ function Home() {
     <PinBoard />
     <RoundNews /> {/* Render NewsBox which will fetch and display round 1 news */}
     <Stocks />
+    
     
     </div>
     </>

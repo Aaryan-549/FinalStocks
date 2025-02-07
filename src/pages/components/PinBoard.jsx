@@ -2,58 +2,111 @@ import React, { useState, useEffect } from "react";
 import { X, ChevronDown } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-function PinBoard() {
-  const [cryptoData, setCryptoData] = useState([]);
+// 🔹 Initial stock data with starting price
+const INITIAL_STOCKS = [
+  { "name": "Suzlon Energy", "startPrice": 210 },
+  { "name": "ITC", "startPrice": 441.4 },
+  { "name": "Yes Bank", "startPrice": 18.25 },
+  { "name": "Hindustan Aeronotics ltd.", "startPrice": 234 },
+  { "name": "Adani Power", "startPrice": 515.5 },
+  { "name": "RVNL", "startPrice": 411 },
+  { "name": "Mahindra & Mahindra ltd.", "startPrice": 2799 },
+  { "name": "Union Bank of India", "startPrice": 107.22 },
+  { "name": "DLF", "startPrice": 692.8 },
+  { "name": "Reliance Industries", "startPrice": 1244.45 },
+  { "name": "Indian Oil Corporation", "startPrice": 128.61 },
+  { "name": "Elcid Investments", "startPrice": 132833.5 },
+  { "name": "Steel Authority of India ltd.", "startPrice": 109.05 },
+  { "name": "Cipla", "startPrice": 1425 },
+  { "name": "Sun Pharmaceutical Industries", "startPrice": 1818 },
+  { "name": "L&T", "startPrice": 3458.2 },
+  { "name": "Adani Ports and Special Economic Zone", "startPrice": 1094.15 },
+  { "name": "Ambuja Cements", "startPrice": 551.8 },
+  { "name": "JSW Steel", "startPrice": 932.45 },
+  { "name": "Mazdock", "startPrice": 2299.55 },
+  { "name": "Ola Electric", "startPrice": 71.34 },
+  { "name": "MRF", "startPrice": 111468.05 },
+  { "name": "Devyani International", "startPrice": 171.22 },
+  { "name": "Vodafone Idea", "startPrice": 9.46 },
+  { "name": "Barflex Polyfilms Ltd", "startPrice": 69.2 },
+  { "name": "Bank Of Maharashtra", "startPrice": 49.56 },
+  { "name": "Mahasagar Travels", "startPrice": 7.48 },
+  { "name": "INDIGO", "startPrice": 4293.6 },
+  { "name": "Surana Telecom & Power", "startPrice": 21.38 }
+];
+
+const PinBoard = () => {
   const [selectedCryptos, setSelectedCryptos] = useState(() => {
-    return JSON.parse(localStorage.getItem("selectedCryptos")) || [];
+    return JSON.parse(localStorage.getItem("selectedCryptos")) || INITIAL_STOCKS.map(s => s.name);
   });
   const [newCryptos, setNewCryptos] = useState([]);
-  const [priceHistory, setPriceHistory] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [cryptoData, setCryptoData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [priceHistoryData, setPriceHistoryData] = useState(() => {
+    return JSON.parse(localStorage.getItem("priceHistory")) || {};
+  });
+
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/1watWnb_z-P-kmFMJ902T-XvZNqNLaXqs3l_xSlVXHzA/gviz/tq?tqx=out:json";
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch(sheetUrl);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+
+      const now = new Date().getTime();
+      const rows = json.table.rows.map((row) => {
+        const cells = row.c.map((cell) => cell?.v || "N/A");
+        const name = cells[0];
+        const latestPrice = parseFloat(cells[1]);
+
+        if (isNaN(latestPrice)) return null;
+
+        const initialStock = INITIAL_STOCKS.find(stock => stock.name === name);
+        const startPrice = initialStock ? initialStock.startPrice : latestPrice;
+
+        let history = priceHistoryData[name] || [{ time: now, price: startPrice }];
+        if (history.length === 0 || history[history.length - 1].price !== latestPrice) {
+          history.push({ time: now, price: latestPrice });
+          if (history.length > 10) history.shift();
+        }
+
+        const change = startPrice !== 0 ? (((latestPrice - startPrice) / startPrice) * 100).toFixed(2) : "0.00";
+
+        return {
+          name,
+          price: latestPrice,
+          startPrice,
+          change,
+          updated: now,
+          priceHistory: history,
+        };
+      }).filter(Boolean);
+
+      setCryptoData(rows);
+      setPriceHistoryData((prev) => {
+        const updatedHistory = { ...prev };
+        rows.forEach((crypto) => {
+          updatedHistory[crypto.name] = crypto.priceHistory;
+        });
+        localStorage.setItem("priceHistory", JSON.stringify(updatedHistory));
+        return updatedHistory;
+      });
+
+      setLoading(false);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load data. Retrying...");
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const initialData = [
-        { name: "BITCOIN", price: 12729, change: -2.64, updated: "5 seconds ago" },
-        { name: "ETHEREUM", price: 3425, change: -1.34, updated: "10 seconds ago" },
-        { name: "DOGECOIN", price: 0.24, change: -0.50, updated: "15 seconds ago" },
-        { name: "RIPPLE", price: 1.05, change: -0.75, updated: "20 seconds ago" },
-        { name: "LITECOIN", price: 150.25, change: -1.20, updated: "25 seconds ago" },
-        { name: "CARDANO", price: 2.15, change: -1.45, updated: "30 seconds ago" },
-        { name: "POLKADOT", price: 18.75, change: -0.85, updated: "35 seconds ago" },
-        { name: "CHAINLINK", price: 25.30, change: -1.10, updated: "40 seconds ago" },
-        { name: "STELLAR", price: 0.32, change: -0.65, updated: "45 seconds ago" },
-        { name: "MONERO", price: 230.80, change: -1.85, updated: "50 seconds ago" },
-        { name: "BITCOIN CASH", price: 540.00, change: -2.00, updated: "55 seconds ago" },
-        { name: "EOS", price: 4.25, change: -1.15, updated: "60 seconds ago" },
-        { name: "DASH", price: 180.40, change: -2.10, updated: "65 seconds ago" },
-        { name: "ZCASH", price: 130.75, change: -1.75, updated: "70 seconds ago" },
-        { name: "VECHAIN", price: 0.11, change: -0.45, updated: "75 seconds ago" },
-        { name: "TETHER", price: 1.00, change: 0.00, updated: "80 seconds ago" },
-        { name: "SOLANA", price: 95.50, change: -1.95, updated: "85 seconds ago" },
-        { name: "TRON", price: 0.09, change: -0.40, updated: "90 seconds ago" },
-        { name: "IOTA", price: 1.45, change: -0.60, updated: "95 seconds ago" },
-        { name: "NEO", price: 38.75, change: -1.80, updated: "100 seconds ago" },
-        { name: "TEZOS", price: 3.95, change: -0.85, updated: "105 seconds ago" },
-        { name: "AVALANCHE", price: 72.30, change: -2.20, updated: "110 seconds ago" },
-        { name: "ALGORAND", price: 1.20, change: -0.55, updated: "115 seconds ago" },
-        { name: "FANTOM", price: 2.30, change: -1.25, updated: "120 seconds ago" },
-        { name: "HEDERA", price: 0.45, change: -0.30, updated: "125 seconds ago" },
-        { name: "COSMOS", price: 28.50, change: -2.10, updated: "130 seconds ago" },
-        { name: "HARMONY", price: 0.32, change: -0.50, updated: "135 seconds ago" },
-        { name: "GALA", price: 0.08, change: -0.20, updated: "140 seconds ago" },
-        { name: "FLOW", price: 9.60, change: -1.90, updated: "145 seconds ago" }
-    ];
-    setCryptoData(initialData);
-    
-    const initialHistory = {};
-    initialData.forEach((crypto) => {
-      initialHistory[crypto.name] = [
-        { time: "1 min ago", price: crypto.price * 0.95 },
-        { time: "30 sec ago", price: crypto.price * 0.98 },
-        { time: "Now", price: crypto.price },
-      ];
-    });
-    setPriceHistory(initialHistory);
+    fetchData();
+    const intervalId = setInterval(fetchData, 5000); // Update every 5 sec
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -70,11 +123,18 @@ function PinBoard() {
     setSelectedCryptos(selectedCryptos.filter((item) => item !== crypto));
   };
 
+  const formatTimeAgo = (timestamp) => {
+    const secondsAgo = Math.floor((new Date().getTime() - timestamp) / 1000);
+    if (secondsAgo < 60) return `${secondsAgo} sec ago`;
+    return `${Math.floor(secondsAgo / 60)} min ago`;
+  };
+
+  if (loading) return <p>Loading data...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+
   return (
     <div className="flex flex-col items-center min-h-[30%] bg-[#0B091A] p-6">
-      <h2 className="text-4xl font-bold text-center mb-4 text-[#E1DFEC] DMSans">
-        PinBoard
-      </h2>
+      <h2 className="text-4xl font-bold text-center mb-4 text-[#E1DFEC] DMSans">PinBoard</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {cryptoData
@@ -87,16 +147,18 @@ function PinBoard() {
                   <div className="w-10 h-10 flex items-center justify-center bg-orange-500 text-white text-md font-bold rounded-full">
                     {crypto.name[0]}
                   </div>
-                  <div className="text-lg font-semibold">${crypto.price}</div>
+                  <div className="text-lg font-semibold">
+                    ${crypto.price ? crypto.price.toFixed(2) : "N/A"}
+                  </div>
                 </div>
-                <div className="text-gray-400 text-sm">{crypto.updated}</div>
+                <div className="text-gray-400 text-sm">{formatTimeAgo(crypto.updated)}</div>
                 <div className={`text-md font-bold ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
                   {crypto.change < 0 ? `↓ ${crypto.change}%` : `↑ ${crypto.change}%`}
                 </div>
               </div>
               <div className="w-1/2">
                 <ResponsiveContainer width="100%" height={60}>
-                  <LineChart data={priceHistory[crypto.name]}>
+                  <LineChart data={crypto.priceHistory}>
                     <XAxis dataKey="time" hide />
                     <YAxis domain={['auto', 'auto']} hide />
                     <Tooltip />
@@ -113,8 +175,8 @@ function PinBoard() {
             </div>
           ))}
 
-        {/* "Add More" Button with Dropdown */}
-        <div className="relative">
+       {/* "Add More" Button with Dropdown */}
+       <div className="relative">
           <button
             className="flex items-center justify-center p-4 border-2 border-dashed border-gray-400 text-gray-400 hover:text-white hover:border-white transition cursor-pointer rounded-lg w-full"
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -127,19 +189,12 @@ function PinBoard() {
               <h3 className="text-lg font-semibold mb-2">Select Cryptos</h3>
               <div className="max-h-40 overflow-y-auto">
                 {cryptoData.map((crypto) => (
-                  <label
-                    key={crypto.name}
-                    className="flex items-center space-x-3 p-2 hover:bg-gray-800 rounded-md cursor-pointer"
-                  >
+                  <label key={crypto.name} className="flex items-center space-x-3 p-2 hover:bg-gray-800 rounded-md cursor-pointer">
                     <input
                       type="checkbox"
                       value={crypto.name}
                       onChange={(e) =>
-                        setNewCryptos((prev) =>
-                          e.target.checked
-                            ? [...prev, e.target.value]
-                            : prev.filter((c) => c !== e.target.value)
-                        )
+                        setNewCryptos((prev) => (e.target.checked ? [...prev, e.target.value] : prev.filter((c) => c !== e.target.value)))
                       }
                       checked={newCryptos.includes(crypto.name)}
                       className="accent-blue-500"
@@ -148,10 +203,7 @@ function PinBoard() {
                   </label>
                 ))}
               </div>
-              <button
-                className="w-full mt-3 p-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
-                onClick={addCryptos}
-              >
+              <button className="w-full mt-3 p-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition" onClick={addCryptos}>
                 Add Selected
               </button>
             </div>
@@ -160,6 +212,6 @@ function PinBoard() {
       </div>
     </div>
   );
-}
+};
 
 export default PinBoard;

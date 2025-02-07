@@ -10,7 +10,7 @@ import PinBoard from './components/PinBoard'
 function Home() {
   return (
     <>
-    <div className='w-screen h-full bg-[#0B091A]'>
+    <div className='w-screen h-full bg-[#0B091A] overflow-x-hidden'>
     <img src={Econ} alt='Econ' className='w-[20%] h-auto pt-[0.3%] pl-[0.5%]' />
     <PinBoard />
     <RoundNews /> {/* Render NewsBox which will fetch and display round 1 news */}

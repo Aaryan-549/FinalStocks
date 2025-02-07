@@ -53,13 +53,13 @@ const InfiniteScroller = ({ newsData = [] }) => {
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-auto p-4">
       <h2 className="text-4xl font-bold text-center mb-[1%] text-[#E1DFEC] DMSans">Activity</h2>
 
-      <div className="flex flex-col w-full max-w-[90vw] lg:max-w-[70vw] h-[70vh] md:h-[60vh] p-4 border border-[#110E22] rounded-lg bg-[rgb(16,14,33)] shadow-lg DMSans text-[#]">
+      <div className="flex flex-col w-full max-w-[90vw] lg:max-w-[70vw] h-[70vh] md:h-[60vh] p-4 border border-[#110E22] rounded-lg bg-[rgb(16,14,33)] shadow-lg DMSans ">
         <div className="flex-grow overflow-y-auto scrollbar-hide space-y-4 p-[1%] bg-[#110E22]">
           {news.length > 0 ? (
             news.map((item, index) => (
               <div
                 key={index}
-                className="p-[2%] bg-[#15112b] rounded-lg shadow-md text-center text-lg font-semibold text-[#E1DFEC] min-h-[50px] w-full"
+                className="p-[2%] bg-[#15112b] rounded-lg shadow-md text-center text-md md:text-lg font-semibold text-[#E1DFEC] min-h-[50px] w-full"
               >
                 {item}
               </div>

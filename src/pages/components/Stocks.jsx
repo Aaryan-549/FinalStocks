@@ -89,15 +89,15 @@ const CryptoTable = () => {
       <h2 className="text-4xl font-bold text-center mb-[1%] text-[#E1DFEC] DMSans">Stocks</h2>
       <div className="flex justify-center items-center min-h-screen">
         <table
-          className="w-[53.3%] mx-auto text-white rounded-lg shadow-lg text-center border-separate border-spacing-4"
+          className=" mx-auto text-white rounded-lg shadow-lg text-center border-separate border-spacing-4"
           style={{ backgroundColor: "rgb(16,14,33)" }}
         >
           <thead>
-            <tr className="border-b border-gray-700 text-gray-400 text-lg">
-              <th className="p-4 DMSans">Stocks</th>
-              <th className="p-4 DMSans">Updated (secs ago)</th>
-              <th className="p-4 DMSans">Change</th>
-              <th className="p-4 DMSans">Price</th>
+            <tr className="border-b border-gray-700 text-gray-400 text-sm md:text-lg">
+              <th className="p-[0.5%] DMSans">Stocks</th>
+              <th className="p-[0.5%] DMSans hidden md:table-cell">Updated</th>
+              <th className="p-[0.5%] DMSans">Change</th>
+              <th className="p-[0.5%] DMSans">Price</th>
             </tr>
           </thead>
           <tbody>
@@ -115,18 +115,18 @@ const CryptoTable = () => {
               </tr>
             ) : (
               cryptoData.map((crypto, index) => (
-                <tr key={index} className="border-b border-gray-700 text-lg">
-                  <td className="p-4 flex items-center justify-center">
-                    <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center mr-2">
+                <tr key={index} className="border-b border-gray-700 text-sm md:text-lg">
+                  <td className="p-[4%] flex items-center justify-center">
+                    <span className="w-[6vw] h-[6vw] md:w-[2vw] md:h-[2vw] bg-orange-500 text-white rounded-full flex items-center justify-center mr-[2%]">
                       B
                     </span>
                     {crypto.name}
                   </td>
-                  <td className="p-4 text-gray-400">{crypto.updated} secs ago</td>
-                  <td className={`p-4 ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
+                  <td className="p-[1%] text-gray-400 hidden md:table-cell">{crypto.updated} secs ago</td>
+                  <td className={`p-[1%] ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
                     {crypto.change < 0 ? "↓" : "↑"} {crypto.change}%
                   </td>
-                  <td className="p-4">${crypto.price}</td>
+                  <td className="p-[1%]">${crypto.price}</td>
                 </tr>
               ))
             )}

@@ -25,7 +25,7 @@ const INITIAL_STOCKS = [
   { "name": "JSW Steel", "startPrice": 932.45 },
   { "name": "Mazdock", "startPrice": 2299.55 },
   { "name": "Ola Electric", "startPrice": 71.34 },
-  { "name": "MRF", "startPrice": 111468.05 },
+  { "name": "BPCL", "startPrice": 111468.05 },
   { "name": "Devyani International", "startPrice": 171.22 },
   { "name": "Vodafone Idea", "startPrice": 9.46 },
   { "name": "Barflex Polyfilms Ltd", "startPrice": 69.2 },

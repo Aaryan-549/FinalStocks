@@ -56,14 +56,11 @@ const CryptoTable = () => {
           const name = cells[0];
           const latestPrice = parseFloat(cells[1]);
 
-          
           const initialStock = INITIAL_STOCKS.find(stock => stock.name === name);
           const startPrice = initialStock ? initialStock.startPrice : latestPrice;
 
-          
           const change = startPrice !== 0 ? (((latestPrice - startPrice) / startPrice) * 100).toFixed(2) : "0.00";
 
-          
           const timeSinceUpdate = now - lastUpdateTime;
 
           return { name, price: latestPrice, startPrice, change, updated: timeSinceUpdate };
@@ -79,7 +76,7 @@ const CryptoTable = () => {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 3000);
+    const interval = setInterval(fetchData, 4000);
 
     return () => clearInterval(interval);
   }, [lastUpdateTime]);
@@ -101,36 +98,36 @@ const CryptoTable = () => {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="4" className="p-4 text-gray-400 text-center">
-                  Loading data...
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan="4" className="p-4 text-red-500 text-center">
-                  {error}
-                </td>
-              </tr>
-            ) : (
-              cryptoData.map((crypto, index) => (
-                <tr key={index} className="border-b border-gray-700 text-sm md:text-lg">
-                  <td className="p-[4%] flex items-center justify-center">
-                    <span className="w-[6vw] h-[6vw] md:w-[2vw] md:h-[2vw] bg-orange-500 text-white rounded-full flex items-center justify-center mr-[2%]">
-                      B
-                    </span>
-                    {crypto.name}
-                  </td>
-                  <td className="p-[1%] text-gray-400 hidden md:table-cell">{crypto.updated} secs ago</td>
-                  <td className={`p-[1%] ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
-                    {crypto.change < 0 ? "↓" : "↑"} {crypto.change}%
-                  </td>
-                  <td className="p-[1%]">${crypto.price}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
+  {loading ? (
+    <tr>
+      <td colSpan="4" className="p-4 text-gray-400 text-center">Loading data...</td>
+    </tr>
+  ) : error ? (
+    <tr>
+      <td colSpan="4" className="p-4 text-red-500 text-center">{error}</td>
+    </tr>
+  ) : (
+    cryptoData.map((crypto, index) => (
+      <tr key={index} className="border-b border-gray-700 text-sm md:text-lg">
+        {/* Stock Name and Symbol */}
+        <td className="p-[4%] flex items-center text-left"> {/* Removed justify-center, added text-left */}
+          <span className="w-[6vw] h-[6vw] md:w-[2vw] md:h-[2vw] bg-orange-500 text-white rounded-full flex items-center justify-center mr-[2%]">
+            {crypto.name[0]}
+          </span>
+          {crypto.name}
+        </td>
+        {/* Updated Time */}
+        <td className="p-[1%] text-gray-400 hidden md:table-cell">{crypto.updated} secs ago</td>
+        {/* Change Percentage */}
+        <td className={`p-[1%] ${crypto.change < 0 ? "text-red-500" : "text-green-500"}`}>
+          {crypto.change < 0 ? "↓" : "↑"} {crypto.change}%
+        </td>
+        {/* Price */}
+        <td className="p-[1%]">₹{crypto.price}</td>
+      </tr>
+    ))
+  )}
+</tbody>
         </table>
       </div>
     </>

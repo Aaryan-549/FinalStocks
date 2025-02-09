@@ -9,7 +9,7 @@ function RoundNews() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const roundDocRef = doc(collection(db, "news"), "2"); 
+        const roundDocRef = doc(collection(db, "news"), "1"); 
         const roundDocSnap = await getDoc(roundDocRef);
 
         if (roundDocSnap.exists()) {

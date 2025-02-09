@@ -148,7 +148,7 @@ const PinBoard = () => {
                     {crypto.name[0]}
                   </div>
                   <div className="text-lg font-semibold">
-                    ${crypto.price ? crypto.price.toFixed(2) : "N/A"}
+                    ₹{crypto.price ? crypto.price.toFixed(2) : "N/A"} {/* Updated to ₹ symbol */}
                   </div>
                 </div>
                 <div className="text-gray-400 text-sm">{formatTimeAgo(crypto.updated)}</div>
